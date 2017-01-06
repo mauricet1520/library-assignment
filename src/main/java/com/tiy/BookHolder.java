@@ -7,6 +7,10 @@ public class BookHolder {
     private String checkOutBy;
     private int id;
 
+    public BookHolder() {
+
+    }
+
     public BookHolder(String checkOutBy, int id) {
         this.checkOutBy = checkOutBy;
         this.id = id;
