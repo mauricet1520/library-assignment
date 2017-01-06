@@ -47,7 +47,7 @@ public class BookDatabase {
             String author = results.getString("author");
             String genre = results.getString("genre");
             boolean checkedOut = results.getBoolean("checkedOut");
-            books.add(new Book(id, title, author, genre, checkedOut, null, localDateTime));
+            books.add(new Book(id, title, author, genre, checkedOut, null));
 
         }
 
@@ -83,25 +83,25 @@ public class BookDatabase {
         stmt.execute();
     }
 
-//    public ArrayList<Book> selectBookForUser(Connection conn, int userID) throws SQLException {
-//        ArrayList<Book> books = new ArrayList<>();
-//        LocalDateTime localDateTime = LocalDateTime.now();
-//        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM books " +
-//                "INNER JOIN customers ON books.customer_id = customer.id " +
-//                "WHERE customer.id = ?");
-//        stmt.setInt(1, userID);
-//        ResultSet results = stmt.executeQuery();
-//
-//        while (results.next()) {
-//            int id = results.getInt("id");
-//            String title = results.getString("title");
-//            String author = results.getString("author");
-//            String genre = results.getString("genre");
-//            boolean checkedOut = results.getBoolean("checkedOut");
-//            books.add(new Book(id, title, author, genre, checkedOut, null, localDateTime));
-//        }
-//        return books;
-//    }
+    public ArrayList<Book> selectBookForUser(Connection conn, int userID) throws SQLException {
+        ArrayList<Book> books = new ArrayList<>();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM books " +
+                "INNER JOIN customers ON books.customer_id = customer.id " +
+                "WHERE customer.id = ?");
+        stmt.setInt(1, userID);
+        ResultSet results = stmt.executeQuery();
+
+        while (results.next()) {
+            int id = results.getInt("id");
+            String title = results.getString("title");
+            String author = results.getString("author");
+            String genre = results.getString("genre");
+            boolean checkedOut = results.getBoolean("checkedOut");
+            books.add(new Book(id, title, author, genre, checkedOut, null));
+        }
+        return books;
+    }
 
 
 }

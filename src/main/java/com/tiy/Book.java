@@ -11,11 +11,11 @@ public class Book {
     private String author;
     private String genre;
     private boolean checkedOut;
-    private Customer checkedOutBy;
+    private String checkedOutBy;
     private LocalDateTime dueDate;
 
     public Book(int id, String title, String author, String genre,
-                boolean checkedOut, Customer checkedOutBy, LocalDateTime dueDate) {
+                boolean checkedOut, String checkedOutBy) {
 
         this.id = id;
         this.title = title;
@@ -66,19 +66,19 @@ public class Book {
         this.checkedOut = checkedOut;
     }
 
-    public Customer getCheckedOutBy() {
+    public String getCheckedOutBy() {
         return checkedOutBy;
     }
 
-    public void setCheckedOutBy(Customer checkedOutBy) {
+    public void setCheckedOutBy(String checkedOutBy) {
         this.checkedOutBy = checkedOutBy;
     }
 
-    public LocalDateTime getDueDate() {
+    private LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
+    private void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 }
