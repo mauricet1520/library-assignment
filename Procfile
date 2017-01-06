@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar  target/ToDoAngular-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar  target/LibraryAssignment-0.0.1-SNAPSHOT.jar
