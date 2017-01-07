@@ -12,20 +12,33 @@ import java.util.ArrayList;
 public class BookDatabase {
     public final static String DB_URL = "jdbc:h2:./main";
 
+    ArrayList<Book> books = new ArrayList<>();
+
+
+    public void dropTable() throws SQLException {
+        Connection connection = DriverManager.getConnection(DB_URL);
+        PreparedStatement statement = connection.prepareStatement("DROP TABLE books");
+        statement.execute();
+
+    }
+
     public void init() throws SQLException {
         Server.createWebServer().start();
         Connection connection = DriverManager.getConnection(DB_URL);
         Statement statement = connection.createStatement();
         statement.execute("CREATE TABLE IF NOT EXISTS books (id IDENTITY, title VARCHAR, author VARCHAR, genre VARCHAR," +
-                " checkedOut BOOLEAN, customer_id INT)");
+                " checkedOut BOOLEAN, user VARCHAR)");
         statement.execute("CREATE TABLE IF NOT EXISTS customers (id IDENTITY, userName VARCHAR, firstName VARCHAR," +
                 " lastName VARCHAR, password VARCHAR)");
     }
 
-    public void insertIntoTable(Connection connection, String title, int customer_id) throws SQLException{
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO books VALUES (NULL, ?, NULL, NULL, false, ?)");
+    public void insertIntoTable(Connection connection, String title, String author, String genre,
+                                String user) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO books VALUES (NULL, ?, ?, ?, false, ?)");
         statement.setString(1, title);
-        statement.setInt(2, customer_id);
+        statement.setString(2, author);
+        statement.setString(3, genre);
+        statement.setString(4, user);
         statement.execute();
     }
 
@@ -36,10 +49,9 @@ public class BookDatabase {
     }
 
     public ArrayList<Book> browseBooks(Connection connection) throws SQLException {
-        ArrayList<Book> books = new ArrayList<>();
-        LocalDateTime localDateTime = LocalDateTime.now();
         Statement statement = connection.createStatement();
         ResultSet results = statement.executeQuery("SELECT * FROM books");
+        ArrayList<Book> myBooks = new ArrayList<>();
 
         while (results.next()) {
             int id = results.getInt("id");
@@ -47,20 +59,52 @@ public class BookDatabase {
             String author = results.getString("author");
             String genre = results.getString("genre");
             boolean checkedOut = results.getBoolean("checkedOut");
-            books.add(new Book(id, title, author, genre, checkedOut, null));
+            String user = results.getString("user");
+            myBooks.add(new Book(id, title, author, genre, checkedOut, user));
 
         }
 
-        return books;
+        return myBooks;
 
     }
 
-    public void checkOutBook(Connection connection, int id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("UPDATE books SET checkedOut = NOT checkedOut WHERE id = ?");
-        statement.setInt(1, id);
-        statement.execute();
+
+    public Book getBook(Connection connection, String title) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM books WHERE title = ?");
+        stmt.setString(1, title);
+
+        ResultSet results = stmt.executeQuery();
+        results.next();
+        int id2 = results.getInt("id");
+        String title2 = results.getString("title");
+        String author = results.getString("author");
+        String genre = results.getString("genre");
+        boolean checkedOut = results.getBoolean("checkedOut");
+        String user1 = results.getString("user");
+
+        Book book = new Book(id2, title2, author, genre, checkedOut, user1);
+
+        return book;
+    }
+
+    public void checkOutBook(Connection conn, String title) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("UPDATE books SET checkedOut = NOT checkedOut WHERE title = ?");
+
+        stmt.setString(1, title);
+        stmt.execute();
+    }
+
+    public void checkedByUser(Connection connection, String user, String title) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement("UPDATE books SET user = ? WHERE title = ?");
+        stmt.setString(1, user);
+        stmt.setString(2, title);
+        stmt.execute();
+
+
 
     }
+
+
 
     public int insertCustomer(Connection connection, String userName, String firstName, String lastName, String password) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("INSERT INTO customers VALUES (NULL, ?, ?, ?, ?)");

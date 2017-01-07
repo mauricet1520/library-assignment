@@ -15,6 +15,7 @@ import static org.junit.Assert.*;
 public class BookDatabaseTest {
 
     static private BookDatabase database;
+
     @Before
     public void setUp() throws Exception {
         if (database == null) {
@@ -48,8 +49,9 @@ public class BookDatabaseTest {
         String lastName = "thomas";
         String password = "1234";
 
-        int custId = database.insertCustomer(connection, userName, firstName, lastName, password);
-        database.insertIntoTable(connection, title, custId);
+
+//        int custId = database.insertCustomer(connection, userName, firstName, lastName, password);
+        database.insertIntoTable(connection, title, userName, null, null);
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM books WHERE title = ?");
         statement.setString(1, title);
         ResultSet results = statement.executeQuery();
@@ -87,8 +89,8 @@ public class BookDatabaseTest {
         int custId2 = database.insertCustomer(connection, userName, firstName, lastname, password);
 
 
-        database.insertIntoTable(connection, title, custId1);
-        database.insertIntoTable(connection, titleTwo, custId2);
+        database.insertIntoTable(connection, title, userName, null, null);
+        database.insertIntoTable(connection, titleTwo, userName, null, null);
 
         ArrayList<Book> books = database.browseBooks(connection);
 
@@ -104,6 +106,26 @@ public class BookDatabaseTest {
         database.deleteUser(connection, userName);
 
     }
+
+    @Test
+    public void testGetAbook() throws Exception {
+
+        Connection conn = DriverManager.getConnection("jdbc:h2:./main");
+
+        Book book = new Book(22, "funk", "cr", "horror", false, "someone");
+
+        database.insertIntoTable(conn, "funk", "cr", "horror", "someone");
+
+
+        Book newBook = database.getBook(conn, book.getTitle());
+
+        assertEquals(newBook.getTitle(), book.getTitle());
+
+        database.deleteRecord(conn, newBook.getCheckedOutBy());
+
+
+    }
+
 
     @Test
     public void testInsertCustomer() throws Exception {
@@ -143,7 +165,6 @@ public class BookDatabaseTest {
             numResults++;
         }
         assertEquals(0, numResults);
-
 
 
     }

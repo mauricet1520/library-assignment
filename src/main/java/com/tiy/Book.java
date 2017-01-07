@@ -25,6 +25,9 @@ public class Book {
         this.checkedOutBy = checkedOutBy;
         this.dueDate = dueDate;
     }
+    public Book() {}
+
+
 
     public int getId() {
         return id;
