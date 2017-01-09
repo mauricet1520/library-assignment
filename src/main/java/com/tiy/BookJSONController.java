@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class BookJSONController {
     static BookDatabase database;
     static Connection connection;
-    static ArrayList<Book> books;
     Book book;
 
     static {
@@ -26,7 +25,6 @@ public class BookJSONController {
             connection = DriverManager.getConnection("jdbc:h2:./main");
             database = new BookDatabase();
             database.init();
-            books = new ArrayList<>();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -93,13 +91,18 @@ public class BookJSONController {
 
         database.insertIntoTable(connection, book.getTitle(), book.getAuthor(), book.getGenre(), book.getCheckedOutBy());
 
-        return books;
+        return getAllBooks();
     }
 
     @RequestMapping(path = "/delete_book.json", method = RequestMethod.POST)
     public void deleteBook(@RequestBody Book book) throws Exception {
 
         database.deleteRecord(connection, book.getTitle());
+    }
+
+    ArrayList<Book> getAllBooks() throws SQLException{
+        ArrayList<Book> books = database.browseBooks(connection);
+        return books;
     }
 
 

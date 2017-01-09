@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US" ng-app="TIYAngularApp">
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="js/tiy-ng-controller.js"></script>
+
+<body ng-controller="LibraryController">
+
+{{! changing the mustache delimiter so it doesn't conflict with  }}
+{{! the default angularjs delimeters - https://mustache.github.io/mustache.5.html for more info  }}
+{{=<% %>=}}
+
+<div style="position: relative; float: left; width: 100%; padding: 20px;">
+    <h1>Hello <span ng-bind="name"></span></h1>
+
+    <p>Name : <input type="text" ng-model="name"></p>
+
+    {{name}} is trying to figure things out ... <br/><br/>
+
+    <input type="button" ng-click="getBooks()" value="Refresh ToDo Data"/>
+
+</div>
+
+<div>
+    <h2>Book List</h2>
+    <ul>
+        <li ng-repeat="book in myBook">
+       Title:{{book.title}} Arthur:{{book.author}} Genre:{{book.genre}} CheckOut: {{book.checkedOut}}
+            <span>  <input type="button" ng-click="delete_book()" value="Create new Book"/></span>
+
+        </li>
+    </ul>
+</div>
+
+
+<div>
+    <h1>Enter new Book information</h1>
+    <span>Title: <input type="text" ng-model="bookRequest.title"/></span>
+    <span>Author: <input type="text" ng-model="bookRequest.author"/></span>
+    <span>Genre: <input type="text" ng-model="bookRequest.genre"/></span>
+    <!--<span>User: <input type="text" ng-model="bookRequest.checkedOutBy"/></span>-->
+    <span>  <input type="button" ng-click="add_book()" value="Create new Book"/></span>
+
+</div>
+
+
+</body>
+</html>
