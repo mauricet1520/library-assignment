@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class BookJSONController {
     static BookDatabase database;
     static Connection connection;
-    Book book;
 
     static {
         try {
@@ -30,6 +29,9 @@ public class BookJSONController {
         }
     }
 
+    Book book;
+
+    //Get request that returns a database of books
     @RequestMapping(path = "/get_books.json", method = RequestMethod.GET)
     public ArrayList<Book> getBooks() throws SQLException {
         ArrayList<Book> databaseBooks = new ArrayList<>();
@@ -57,21 +59,20 @@ public class BookJSONController {
 
     }
 
+    //Post request that checkout a book
     @RequestMapping(path = "/checkout_book.json", method = RequestMethod.POST)
     public Book checkOutBook(@RequestBody BookHolder holder) throws Exception {
         book = new Book();
-
          book = database.getBook(connection, holder.getTitle());
         database.checkOutBook(connection, holder.getTitle());
         book.setCheckedOutBy(holder.getCheckedOutBy());
 
         database.checkedByUser(connection, holder.getCheckedOutBy(), book.getTitle());
 
-
         return book;
 
-
     }
+    //Post request that check in a book
     @RequestMapping(path = "/checkin_book.json", method = RequestMethod.POST)
     public Book checkInBook(@RequestBody BookHolder holder) throws Exception {
         book = new Book();
@@ -81,11 +82,11 @@ public class BookJSONController {
         book.setCheckedOutBy(null);
 
         database.checkedByUser(connection, null, book.getTitle());
-
         return book;
 
     }
 
+    //Post request that adds a book to the database table
     @RequestMapping(path = "/add_book.json", method = RequestMethod.POST)
     public ArrayList<Book> addBook(@RequestBody Book book) throws Exception {
 
@@ -94,6 +95,7 @@ public class BookJSONController {
         return getAllBooks();
     }
 
+    //Post request that deletes a book from the database table
     @RequestMapping(path = "/delete_book.json", method = RequestMethod.POST)
     public void deleteBook(@RequestBody Book book) throws Exception {
 

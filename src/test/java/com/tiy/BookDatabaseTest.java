@@ -111,16 +111,10 @@ public class BookDatabaseTest {
     public void testGetAbook() throws Exception {
 
         Connection conn = DriverManager.getConnection("jdbc:h2:./main");
-
         Book book = new Book(22, "funk", "cr", "horror", false, "someone");
-
         database.insertIntoTable(conn, "funk", "cr", "horror", "someone");
-
-
         Book newBook = database.getBook(conn, book.getTitle());
-
         assertEquals(newBook.getTitle(), book.getTitle());
-
         database.deleteRecord(conn, newBook.getCheckedOutBy());
 
 
@@ -138,7 +132,6 @@ public class BookDatabaseTest {
         int custId = database.insertCustomer(conn, userName, firstName, lastname, password);
         PreparedStatement statement = conn.prepareStatement("SELECT * FROM customers WHERE username = ?");
 
-
         statement.setString(1, userName);
         ResultSet results = statement.executeQuery();
         assertNotNull(results);
@@ -153,19 +146,13 @@ public class BookDatabaseTest {
         assertEquals(1, numResults);
         assertEquals(custId, userIdRetrieve);
 
-//        ToDoItem retrieveItem = myDatabase.retrieveToDo(conn, todoText);
-//        assertNotNull(retrieveItem);
-//        assertEquals(todoText, retrieveItem.getText());
-
         database.deleteUser(conn, userName);
-
         results = statement.executeQuery();
         numResults = 0;
         while (results.next()) {
             numResults++;
         }
         assertEquals(0, numResults);
-
 
     }
 

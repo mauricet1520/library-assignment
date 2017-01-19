@@ -3,11 +3,17 @@ package com.tiy;
 /**
  * Created by crci1 on 1/6/2017.
  */
+
+/**
+ * class is used for the RequestBody in BookJSONController.java
+ *
+ */
+
+
 public class BookHolder {
     private String checkedOutBy;
     private int id;
     private String title;
-
 
     public BookHolder() {
 

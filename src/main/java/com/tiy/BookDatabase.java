@@ -8,13 +8,14 @@ import java.util.ArrayList;
 
 /**
  * Created by crci1 on 1/5/2017.
+ *
+ * A class that uses a h2 database table to store a list of books. Book.java
  */
 public class BookDatabase {
     public final static String DB_URL = "jdbc:h2:./main";
-
     ArrayList<Book> books = new ArrayList<>();
 
-
+    //drops the table
     public void dropTable() throws SQLException {
         Connection connection = DriverManager.getConnection(DB_URL);
         PreparedStatement statement = connection.prepareStatement("DROP TABLE books");
@@ -22,6 +23,11 @@ public class BookDatabase {
 
     }
 
+    /**
+     * starts the database
+     * creates the tables
+     * @throws SQLException
+     */
     public void init() throws SQLException {
         Server.createWebServer().start();
         Connection connection = DriverManager.getConnection(DB_URL);
@@ -32,6 +38,7 @@ public class BookDatabase {
                 " lastName VARCHAR, password VARCHAR)");
     }
 
+    // inserts books into table
     public void insertIntoTable(Connection connection, String title, String author, String genre,
                                 String user) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("INSERT INTO books VALUES (NULL, ?, ?, ?, false, ?)");
@@ -42,12 +49,13 @@ public class BookDatabase {
         statement.execute();
     }
 
+    //delete a book from table
     public void deleteRecord(Connection connection, String title) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("DELETE FROM books WHERE title = ?");
         statement.setString(1, title);
         statement.execute();
     }
-
+    //method that views all the books
     public ArrayList<Book> browseBooks(Connection connection) throws SQLException {
         Statement statement = connection.createStatement();
         ResultSet results = statement.executeQuery("SELECT * FROM books");
@@ -68,7 +76,7 @@ public class BookDatabase {
 
     }
 
-
+    // method that returns a one book
     public Book getBook(Connection connection, String title) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM books WHERE title = ?");
         stmt.setString(1, title);
@@ -87,6 +95,7 @@ public class BookDatabase {
         return book;
     }
 
+    //method allows a user the checkout
     public void checkOutBook(Connection conn, String title) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("UPDATE books SET checkedOut = NOT checkedOut WHERE title = ?");
 
@@ -94,18 +103,15 @@ public class BookDatabase {
         stmt.execute();
     }
 
+    //sets a user to the book when the book is checkedout
     public void checkedByUser(Connection connection, String user, String title) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement("UPDATE books SET user = ? WHERE title = ?");
         stmt.setString(1, user);
         stmt.setString(2, title);
         stmt.execute();
 
-
-
     }
-
-
-
+    // insert a customer to a table
     public int insertCustomer(Connection connection, String userName, String firstName, String lastName, String password) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("INSERT INTO customers VALUES (NULL, ?, ?, ?, ?)");
         statement.setString(1, userName);
@@ -121,6 +127,7 @@ public class BookDatabase {
         return results.getInt("id");
     }
 
+    // delete a customer
     public void deleteUser(Connection conn, String username) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM customers WHERE userName = ?");
         stmt.setString(1, username);

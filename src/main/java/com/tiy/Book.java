@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * Created by crci1 on 1/5/2017.
+ * blueprint for a book object
  */
 public class Book {
     private int id;
@@ -26,8 +27,6 @@ public class Book {
         this.dueDate = dueDate;
     }
     public Book() {}
-
-
 
     public int getId() {
         return id;
